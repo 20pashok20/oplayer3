@@ -15,7 +15,11 @@ oplayer3 v3
 # Установка:
 Скачайте дистрибутив oplayer (https://github.com/uavn/oplayer3), распакуйте и залейте через FTP (или SSH) на ваш хостинг в каталог соответствующий домену. Для этого воспользуйтесь любым FTP-клиентом (FileZilla, mc). При этом, в настройках (виртуалхостах) нужно направить в папку web сайта.<br/>
 <br/>
-Пример виртуалхоста apache2:<br/>
+Отдельно скачайте зависимости по ссылке http://ge.tt/4XB07jm и распакуйте в папку vendor проекта, или выполните команду:<br/>
+«php composer.phar install» из консоли в корне проекта.<br/>
+<br/>
+
+Направьте веб-сервер в каталог web проекта, пример виртуалхоста apache2:<br/>
 &lt;VirtualHost *:80&gt;<br/>
   ServerName mysuperplayer.com<br/>
   DocumentRoot /var/www/oplayer3/web<br/>
