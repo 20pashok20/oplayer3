@@ -1,0 +1,30 @@
+{
+  "require": {
+    "silex/silex": "1.0.*@dev",
+    "symfony/security": "~2.1",
+    "filp/whoops": "dev-master",
+    "symfony/yaml": "2.*",
+    "propel/propel1": "1.6.*@dev",
+    "propel/propel-service-provider": "dev-master",
+    "twig/twig": ">=1.8,<2.0-dev",
+    "symfony/twig-bridge": "~2.3",
+    "symfony/form": "~2.3",
+    "symfony/validator": "~2.3",
+    "symfony/config": "~2.3",
+    "symfony/translation": "~2.3",
+    "symfony/locale": "~2.3",
+    "pagerfanta/pagerfanta": "dev-master",
+    "twig/extensions": "1.0.*@dev",
+    "sybio/image-workshop": "dev-master",
+    "monolog/monolog": ">=1.0.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "Controller": "app",
+      "Entity": "app",
+      "Model": "app",
+      "Project": "app"
+    }
+  },
+  "minimum-stability": "dev"
+}

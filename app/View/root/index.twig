@@ -1,0 +1,22 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+  <div class="top-artists">
+    
+
+    {% if artists %}
+      {% for artist in artists.artists.artist %}
+        <div class="top-artist">
+          <a class="noreload" href="{{ url('search.artist', {artist: artist.name|url_encode}) }}">
+            <img src="{{ attribute(artist.image.2, '#text') }}"/>
+          </a>
+          <span>{{ artist.name }}</span>
+        </div>
+      {% endfor %}
+    {% else %}
+      Ошибка доступа к API LastFM.
+    {% endif %}
+
+    <div class="clr"></div>
+  </div>
+{% endblock %}

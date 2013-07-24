@@ -1,0 +1,47 @@
+<div id="playlists">
+  <div class="playlists-header">
+    Мои плейлисты
+    <a href="javascript:" class="playlists-new"></a>
+  </div>
+
+  <div class="playlists-body">
+    {% for playlist in playlists %}
+      <div class="playlist" data-id="{{ playlist.id }}">
+        <a href="javascript:" class="playlist-move"></a>
+        <a class="noreload playlist-title" href="{{ url('playlist', {id: playlist.id}) }}">{{ playlist.name }}</a>
+        <span class="playlist-count">{{ playlist.cnt*1 }}</span>
+        <a href="javascript:" class="playlist-delete"></a>
+      </div>
+    {% else %}
+      <div class="playlists-no">
+        Нет плейлистов        
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  $(".playlists-body").sortable({
+    axis: 'y',
+    handle: '.playlist-move',
+    items: '.playlist',
+    opacity: '0.5',
+    stop: function( event, ui ) {
+      var ids = [];
+
+      $('.playlists-body .playlist').each(function() {
+        ids.push($(this).data('id'));
+      });
+
+      $.ajax({
+        url: '/poschange',
+        type: 'post',
+        data: {
+          ids: ids.join(',')
+        }
+      });
+    }
+  });
+
+  $(".playlists-body").disableSelection();
+</script>

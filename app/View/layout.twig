@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  <title>{% block title %}Open Player v3{% endblock %}</title>
+  <meta name="keywords" content="{% block keywords %}Open Player{% endblock %}" />
+  <meta name="description" content="{% block description %}Open Player{% endblock %}" />
+  <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen, projection" />
+  <!--[if lte IE 6]><link rel="stylesheet" href="/css/style_ie.css" type="text/css" media="screen, projection" /><![endif]-->
+
+  <link rel="shortcut icon" href="/img/fav.ico?v3"/>
+
+  <script src="/js/jquery-1.10.2.min.js"></script>
+  <script src="/lib/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+  <script src="/js/main.js"></script>
+
+  <script src="/lib/history.js/scripts/bundled/html4+html5/jquery.history.js"></script>
+</head>
+
+<body>
+<div id="wrapper">
+  <header id="header">
+    <div class="subheader">
+      <div class="leftheader">
+        <a href="/" class="logo fl noreload">
+          <img src="/img/logo.png"/>
+        </a>
+
+        <form class="searchform fr" action="{{ url('search') }}">
+          <input autocomplete="off" type="text" name="q" value="" placeholder="Поиск музыки"/>
+          <input type="submit" value=""/>
+        </form>
+
+        <div class="clr"></div>
+      </div>
+      <div class="rightheader">
+        {% if app.user.get() %}
+          <a class="selected" href="javascript:">{{ app.user.get('email') }}</a>
+          <a href="{{ url('auth.logout') }}">Выход</a>
+        {% else %}
+          <a class="selected noreload" href="{{ url('auth.login') }}">Вход</a>
+          <a class="selected noreload" href="{{ url('auth.register') }}">Регистрация</a>
+        {% endif %}
+      </div>
+      <div class="clr"></div>
+    </div>
+  </header><!-- #header-->
+
+  <div id="headerplaceholder">
+  </div>
+
+  <section id="middle">
+    <div id="container">
+      <div id="content">
+        <div class="subcontent">
+          {% block content %}
+            Hello
+          {% endblock %}
+        </div>
+      </div><!-- #content-->
+    </div><!-- #container-->
+
+    <aside id="sideRight">
+      {% block sidebar %}
+        <div id="rightblock">
+          {{ render(url('player')) }}
+
+          {% if app.user.get() %}
+            {{ render(url('playlists')) }}
+          {% endif %}
+        </div>
+
+          {{ render(url('donate')) }}
+      {% endblock %}
+    </aside><!-- #sideRight -->
+  </section><!-- #middle-->
+</div><!-- #wrapper -->
+
+<footer id="footer">
+  <div class="subfooter">
+    {% block footer %}
+      <div class="fl">
+        © OpenPlayer {{ "now"|date('Y') }}
+        &nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+
+      <div class="fr">
+        Developer <a href="http://bonart.org.ua" target="_blank">Artem Bondarenko</a>,
+        designer <a href="http://vk.com/id1944631" target="_blank">Artur Chakmazyan</a>
+      </div>
+
+      <div class="clr"></div>
+    {% endblock %}
+  </div>
+</footer><!-- #footer -->
+
+<div id="loading">
+  <div class="loading-bg">
+  </div>
+  <div class="loading">
+  <img src="/img/logo.png"/><br/><br/>
+    <img src="/img/loading.gif"/>
+    <br/><br/><br/>
+    Загрузка...
+  </div>
+</div>
+</body>
+</html>

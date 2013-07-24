@@ -1,0 +1,14 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+  <h1>Введите, пожалуйста, текст с картинки</h1>
+
+
+  <form action="{{ url('entercaptcha') }}" method="POST">
+    <input type="hidden" name="sid" value="{{ sid }}"/>
+    <img src="{{ img }}"/><br/>
+    <input type="text" name="key" value=""/><br/>
+
+    <input type="submit" value="Отправить"/>
+  </form>
+{% endblock %}

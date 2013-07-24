@@ -1,0 +1,9 @@
+<div class="playlists-list">
+  {% for playlist in playlists %}
+    <div class="playlist-item" data-id="{{ playlist.id }}">{{ playlist.name }}</div>
+  {% else %}
+    <div class="playlists-no">
+      Нет плейлистов        
+    </div>
+  {% endfor %}
+</div>
