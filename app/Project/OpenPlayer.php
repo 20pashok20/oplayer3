@@ -20,7 +20,8 @@ class OpenPlayer {
 
   private function getToken( $retoken = false ) {
     $account = $this->account;
-    $token = Cache::get("token_".sha1($account), 60*60*24*7, function() use ( $account ) {
+    $self = $this;
+    $token = Cache::get("token_".sha1($account), 60*60*24*7, function() use ( $account, $self ) {
       $token = null;
       $cookiepath = __DIR__."/../../cache/cookie_".sha1($account);
 
@@ -32,7 +33,7 @@ class OpenPlayer {
       curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiepath);
       curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiepath);
       curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-      $resp = $this->curl_redirect_exec($ch);
+      $resp = $self->curl_redirect_exec($ch);
       curl_close($ch);
 
       $html = str_get_html($resp);
@@ -55,7 +56,7 @@ class OpenPlayer {
           curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiepath);
           curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiepath);
           curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-          $resp = $this->curl_redirect_exec($ch);
+          $resp = $self->curl_redirect_exec($ch);
           curl_close($ch);
         }
       }
@@ -66,8 +67,8 @@ class OpenPlayer {
       curl_setopt($ch, CURLOPT_NOBODY, 0);
       curl_setopt($ch, CURLOPT_COOKIEFILE, $cookiepath);
       curl_setopt($ch, CURLOPT_COOKIEJAR, $cookiepath);
-      curl_setopt($ch, CURLOPT_URL, 'http://oauth.vk.com/authorize?client_id='.$this->appId.'&scope=audio&response_type=token');
-      $resp = $this->curl_redirect_exec($ch);
+      curl_setopt($ch, CURLOPT_URL, 'http://oauth.vk.com/authorize?client_id='.$self->appId.'&scope=audio&response_type=token');
+      $resp = $self->curl_redirect_exec($ch);
       curl_close($ch);
 
       // Here I recieve token, or form to grant access to application, so
@@ -88,11 +89,11 @@ class OpenPlayer {
           $resp = curl_exec($ch);
           curl_close($ch);
 
-          $token = $this->getToken();
+          $token = $self->getToken();
         }
       }
 
-      return $this->access_token;
+      return $self->access_token;
     }, $retoken);
 
     return $token;
