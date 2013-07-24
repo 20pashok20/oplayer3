@@ -6,7 +6,7 @@ namespace Project;
 
 class OpenPlayer {
   private $account = null;
-  private $access_token = null;
+  public $access_token = null;
 
   public function __construct( $accounts, $appIds ) {
     $this->account = $accounts[
