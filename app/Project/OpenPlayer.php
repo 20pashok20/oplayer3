@@ -110,7 +110,7 @@ class OpenPlayer {
     );
     $http_query = http_build_query($params);
     $token = $this->getToken();
-    $result = file_get_contents("https://api.vk.com/method/audio.getById?{$http_query}&access_token={$token}");
+    $result = file_get_contents("http://api.vk.com/method/audio.getById?{$http_query}&access_token={$token}");
     $result = json_decode($result);
 
     if ( !$reget && isset($result->error) && 5 == $result->error->error_code ) {
@@ -179,7 +179,7 @@ class OpenPlayer {
 
     $http_query = http_build_query($params);
     $token = $this->getToken();
-    $result = file_get_contents("https://api.vk.com/method/audio.search?{$http_query}&access_token={$token}");
+    $result = file_get_contents("http://api.vk.com/method/audio.search?{$http_query}&access_token={$token}");
     $result = json_decode($result);
 
     // If captcha
