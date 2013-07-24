@@ -110,7 +110,7 @@ class OpenPlayer {
     );
     $http_query = http_build_query($params);
     $token = $this->getToken();
-    $result = $this->file_get_contents_curl("http://api.vk.com/method/audio.getById?{$http_query}&access_token={$token}");
+    $result = $this->file_get_contents_curl("https://api.vk.com/method/audio.getById?{$http_query}&access_token={$token}");
     $result = json_decode($result);
 
     if ( !$reget && isset($result->error) && 5 == $result->error->error_code ) {
