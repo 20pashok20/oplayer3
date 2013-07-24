@@ -54,12 +54,12 @@ class Auth implements \Silex\ControllerProviderInterface {
           if ( $app['debug'] ) {
             $app['monolog']->addInfo( 'Registration mail: ' . $html );
           } else {
-            $message = \Swift_Message::newInstance()
-              ->setSubject($app['translator']->trans('Confirmation')." Email на {$host}")
-              ->setFrom($app['conf']['app']['backmail'])
-              ->setTo($user->email)
-              ->setBody($html);
-            $app['mailer']->send($message);
+            // $message = \Swift_Message::newInstance()
+            //   ->setSubject($app['translator']->trans('Confirmation')." Email на {$host}")
+            //   ->setFrom($app['conf']['app']['backmail'])
+            //   ->setTo($user->email)
+            //   ->setBody($html);
+            // $app['mailer']->send($message);
           }
 
           return $app->redirect(
