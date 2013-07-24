@@ -1,6 +1,8 @@
 oplayer3 v3
 ========
 
+![OpenPlayer v3](http://cs312821.vk.me/v312821696/1dc6/J9khmkOQ494.jpg)
+
 # Что нового в v3:
 
 Учет последних ихменений в API вконтакте;
