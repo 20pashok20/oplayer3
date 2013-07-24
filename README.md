@@ -16,6 +16,7 @@ oplayer3 v3
 Скачайте дистрибутив oplayer (https://github.com/uavn/oplayer3), распакуйте и залейте через FTP (или SSH) на ваш хостинг в каталог соответствующий домену. Для этого воспользуйтесь любым FTP-клиентом (FileZilla, mc). При этом, в настройках (виртуалхостах) нужно направить в папку web сайта.
 
 Пример виртуалхоста apache2:
+<code>
 <VirtualHost *:80>
   ServerName mysuperplayer.com
   DocumentRoot /var/www/oplayer3/web
@@ -23,6 +24,7 @@ oplayer3 v3
     AllowOverride All
   </Directory>
 </VirtualHost>
+</code>
 
 **Права на папку cache должны быть 777**
 
