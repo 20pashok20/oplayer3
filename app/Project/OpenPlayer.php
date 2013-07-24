@@ -110,7 +110,7 @@ class OpenPlayer {
     );
     $http_query = http_build_query($params);
     $token = $this->getToken();
-    $result = file_get_contents("http://api.vk.com/method/audio.getById?{$http_query}&access_token={$token}");
+    $result = $this->file_get_contents_curl("http://api.vk.com/method/audio.getById?{$http_query}&access_token={$token}");
     $result = json_decode($result);
 
     if ( !$reget && isset($result->error) && 5 == $result->error->error_code ) {
@@ -179,7 +179,7 @@ class OpenPlayer {
 
     $http_query = http_build_query($params);
     $token = $this->getToken();
-    $result = file_get_contents("http://api.vk.com/method/audio.search?{$http_query}&access_token={$token}");
+    $result = $this->file_get_contents_curl("https://api.vk.com/method/audio.search?{$http_query}&access_token={$token}");
     $result = json_decode($result);
 
     // If captcha
@@ -268,6 +268,21 @@ class OpenPlayer {
       'count' => $count,
       'tracks' => $tracks
     );
+  }
+
+  public function file_get_contents_curl($url) {
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);       
+
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+    return $data;
   }
 
   public function curl_redirect_exec($ch, &$redirects = 0, $curloptHeader = false) {
