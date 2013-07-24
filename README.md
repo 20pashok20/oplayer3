@@ -1,4 +1,42 @@
-oplayer3
+oplayer3 v3
 ========
 
-Open Source online audio player «Open Player» v.3. Feel free to use it in any way you want. http://bonart.org.ua/oplayer3
+# Что нового в v3:
+
+Учет последних ихменений в API вконтакте;
+Обработка капчи;
+Новая архитектура движка, теперь код максимально
+близок к «идеалу», без излишеств;
+Полностью новый дизайн;
+Новая и простая система кеширования;
+
+# Установка:
+Скачайте дистрибутив oplayer (https://github.com/uavn/oplayer3), распакуйте и залейте через FTP (или SSH) на ваш хостинг в каталог соответствующий домену. Для этого воспользуйтесь любым FTP-клиентом (FileZilla, mc). При этом, в настройках (виртуалхостах) нужно направить в папку web сайта.
+
+Пример виртуалхоста apache2:
+<VirtualHost *:80>
+  ServerName mysuperplayer.com
+  DocumentRoot /var/www/oplayer3/web
+  <Directory /var/www/oplayer3/web>
+    AllowOverride All
+  </Directory>
+</VirtualHost>
+
+**Права на папку cache должны быть 777**
+
+Файл oplayer.sql — это дамп базы данных, **которую нужно развернуть** на своем MySQL сервере.
+Если у вас установлен PHPMyAdmin, вам нужно зайти на вкладку Import, выбрать файл oplayer.sql и нажать кнопку "Go".
+![PHPMyAdmin](http://dl.dropbox.com/u/10902867/blog/pma.png)
+
+Откройте файл app/Confid/app.ini любым текстовым редактором.
+Здесь нужно указать данные доступа к вашему аккаунту вконтакте а также ID StandAlone приложения, через которое он будет работать (Создать можно здесь — http://vk.com/dev).
+
+В файле app/Config/build.properties нужно указать настройки доступа к базе данных:
+propel.database.url = mysql:host=localhost;dbname=НАЗВАНИЕ_БАЗЫ_ДАННЫХ;charset=utf8
+propel.database.user = ИМЯ_ПОЛЬЗОВАТЕЛЯ_БАЗЫ_ДАННЫХ
+propel.database.password = ПАРОЛЬ
+Настройки для доступа к базе данных можно посмотреть, например, в панели управления хостингом, или уточнить в тех.поддержке или системного администратора. 
+
+Если всё было настроено правильно по ссылке должен быть доступен плеер. 
+
+Подробности на http://bonart.org.ua/oplayer3
