@@ -5,7 +5,7 @@
 namespace Project;
 
 class OpenPlayer {
-  private $account = null;
+  public $account = null;
   public $access_token = null;
 
   public function __construct( $accounts, $appIds ) {
@@ -18,7 +18,7 @@ class OpenPlayer {
     ];
   }
 
-  private function getToken( $retoken = false ) {
+  public function getToken( $retoken = false ) {
     $account = $this->account;
     $self = $this;
     $token = Cache::get("token_".sha1($account), 60*60*24*7, function() use ( $account, $self ) {
