@@ -35,9 +35,10 @@ class OpenPlayer {
       curl_setopt($ch, CURLOPT_TIMEOUT, 20);
       $resp = $self->curl_redirect_exec($ch);
       curl_close($ch);
-
+// print_r($resp);die;
       $html = str_get_html($resp);
       if ( $html ) {
+        // echo 'wtf';die;
         $form = $html->find('form', -1);
         if ( $action = $form->action ) {
           $accountInfo = explode(':', $account, 2);
@@ -58,6 +59,11 @@ class OpenPlayer {
           curl_setopt($ch, CURLOPT_TIMEOUT, 20);
           $resp = $self->curl_redirect_exec($ch);
           curl_close($ch);
+
+          if ( false !== strpos($resp, 'service_msg_warning') ) {
+            header("Location:/vkerror");
+            die;
+          }
         }
       }
       
@@ -70,7 +76,7 @@ class OpenPlayer {
       curl_setopt($ch, CURLOPT_URL, 'http://oauth.vk.com/authorize?client_id='.$self->appId.'&scope=audio&response_type=token');
       $resp = $self->curl_redirect_exec($ch);
       curl_close($ch);
-
+// print_r($resp);die;
       // Here I recieve token, or form to grant access to application, so
       $html = str_get_html($resp);
       if ( $html ) {
@@ -88,7 +94,7 @@ class OpenPlayer {
           curl_setopt($ch, CURLOPT_TIMEOUT, 20);
           $resp = curl_exec($ch);
           curl_close($ch);
-
+// print_r($resp);die;
           $token = $self->getToken();
         }
       }

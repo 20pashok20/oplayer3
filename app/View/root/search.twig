@@ -57,9 +57,10 @@
           <a href="{{ url('mp3', {vkid:  track.vkId, dl: 1}) }}" target="_blank" class="track-download"></a>
           {% if playlistId %}
             <a href="javascript:" class="track-delfromplaylist" data-playlistid="{{ playlistId }}"></a>
-          {% else %}
+          {% elseif app.user.get() %}
             <a href="javascript:" class="track-addtoplaylist"></a>
           {% endif %}
+
           {{ track.duration }}
         </span>
         

@@ -79,7 +79,7 @@ class Root implements \Silex\ControllerProviderInterface {
 
     $index->get('/vkerror', function( Application $app ) {
       if( isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 'xmlhttprequest' == strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) ) {
-          return "<script>location.href = '/vkerror';</script>";
+          return "<div><div class='subcontent'><script>location.href = '/vkerror';</script></div></div>";
       }
 
       return $app['twig']->render('root/vkerror.twig', array(
@@ -236,6 +236,14 @@ class Root implements \Silex\ControllerProviderInterface {
       $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24, function() use ($app, $vkid) {
         return $app['openplayer']->audioGetById( $vkid );
       });
+
+      // If cached url is expired, recache track.
+      $headers = get_headers($vkTrack->url);
+      if ( 'HTTP/1.1 200 OK' != $headers[0] ) {
+        $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24, function() use ($app, $vkid) {
+          return $app['openplayer']->audioGetById( $vkid );
+        }, true);
+      }
 
       header("Content-Length: {$vkTrack->size}");
 
