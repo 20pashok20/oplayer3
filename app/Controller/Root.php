@@ -256,18 +256,21 @@ class Root implements \Silex\ControllerProviderInterface {
     $index->get('/mp3/{vkid}.mp3', function( Application $app, $vkid ) {
       session_write_close();
 
-      $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24*14, function() use ($app, $vkid) {
+      $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24, function() use ($app, $vkid) {
         return $app['openplayer']->audioGetById( $vkid );
       });
 
-      $cachedir = __DIR__ . '/../../web/cache/';
-      list($filename, $extension) = array($vkid, 'mp3');
-      $path = str_split($filename, 2);
-      $path = join('/', $path);
-      $uploadfile = $path . '/' . $filename . '.' . $extension;
+      // If cached url is expired, recache track.
+      $headers = get_headers($vkTrack->url);
+      if ( 'HTTP/1.1 200 OK' != $headers[0] ) {
+        $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24, function() use ($app, $vkid) {
+          return $app['openplayer']->audioGetById( $vkid );
+        }, true);
+      }
 
-      if ( file_exists($cachedir . $uploadfile) ) {
-        if ( $app['request']->get('dl') ) {
+      header("Content-Length: {$vkTrack->size}");
+
+      if ( $app['request']->get('dl') ) {
           header('Last-Modified:');
           header('ETag:');
           header('Content-Type: audio/mpeg');
@@ -277,44 +280,12 @@ class Root implements \Silex\ControllerProviderInterface {
           header('Content-Description: File Transfer');
           header('Content-Transfer-Encoding: binary');
 
-          echo file_get_contents($cachedir . $uploadfile);
+          echo file_get_contents($vkTrack->url);
           die;
-        }
-
-        return $app->stream(function () use ($cachedir, $uploadfile) {
-          readfile($cachedir . $uploadfile);
-        }, 200, array('Content-Type' => 'audio/mpeg'));
-      }
-      mkdir($cachedir . $path, 0777, true);
-
-      // If cached url is expired, recache track.
-      $headers = get_headers($vkTrack->url);
-      if ( 'HTTP/1.1 200 OK' != $headers[0] ) {
-        $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24*14, function() use ($app, $vkid) {
-          return $app['openplayer']->audioGetById( $vkid );
-        }, true);
       }
 
-      header("Content-Length: {$vkTrack->size}");
-
-      file_put_contents($cachedir . $uploadfile, file_get_contents($vkTrack->url));
-
-      if ( $app['request']->get('dl') ) {
-        header('Last-Modified:');
-        header('ETag:');
-        header('Content-Type: audio/mpeg');
-        header('Accept-Ranges: bytes');
-
-        header("Content-Disposition: attachment; filename=\"{$vkTrack->fname}\"");
-        header('Content-Description: File Transfer');
-        header('Content-Transfer-Encoding: binary');
-
-        echo file_get_contents($cachedir . $uploadfile);
-        die;
-      }
-      
-      return $app->stream(function () use ($cachedir, $uploadfile) {
-        readfile($cachedir . $uploadfile);
+      return $app->stream(function () use ($vkTrack) {
+        readfile($vkTrack->url);
       }, 200, array('Content-Type' => 'audio/mpeg'));
     })->bind('mp3');
 
