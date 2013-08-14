@@ -8,7 +8,7 @@
     <div class="artist-info">
       <div class="artist-info-more">
         {% if attribute(artistInfo.artist.image.2, '#text') %}
-        <img class="fl" src="{{ attribute(artistInfo.artist.image.2, '#text') }}"/>
+          <img class="fl" src="{{ attribute(artistInfo.artist.image.2, '#text') }}"/>
         {% endif %}
         <h2>{{ artistInfo.artist.name }}</h2>
 
@@ -34,38 +34,7 @@
 
   <div class="tracks">
     {% for i,track in tracks %}
-      <div
-        class="track {% if  0 == i%2 %}odd{% endif %}"
-        data-vkid="{{ track.vkId }}"
-        >
-        <div class="fl">
-          <div class="controls">
-            <a href="javascript:" class="track-play"></a>
-            <a href="javascript:" class="track-pause"></a>
-
-            <div class="clr"></div>
-          </div>
-
-          <a class="noreload track-artist" href="{{ url('search.artist', {artist: track.artist|url_encode}) }}">{{ track.artist|raw }}</a>
-          —
-          <a class="noreload track-title" href="{{ url('track', {vkId: track.vkId}) }}">{{ track.title|raw }}</a>
-
-          <div class="clr"></div>
-        </div>
-
-        <span class="fr">
-          <a href="{{ url('mp3', {vkid:  track.vkId, dl: 1}) }}" target="_blank" class="track-download"></a>
-          {% if playlistId %}
-            <a href="javascript:" class="track-delfromplaylist" data-playlistid="{{ playlistId }}"></a>
-          {% elseif app.user.get() %}
-            <a href="javascript:" class="track-addtoplaylist"></a>
-          {% endif %}
-
-          {{ track.duration }}
-        </span>
-        
-        <div class="clr"></div>
-      </div>
+      {% include 'root/track-item.twig' %}
     {% else %}
       Ничего нет<br/>
       <img src="http://fc06.deviantart.net/fs70/i/2013/013/2/c/grumpy_cat_by_adlynh-d5rdjjr.png" width="100%"/>

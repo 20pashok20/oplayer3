@@ -78,6 +78,7 @@ $app['openplayer'] = $app->share(function () use ($app) {
     $app['conf']['appId']
   );
 });
+Project\OpenPlayer::$app = $app;
 
 if ( $app['debug'] ) {
   // Monolog

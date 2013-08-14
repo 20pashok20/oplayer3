@@ -5,6 +5,7 @@
 namespace Project;
 
 class OpenPlayer {
+  public static $app = null;
   public $account = null;
   public $access_token = null;
 
@@ -137,6 +138,25 @@ class OpenPlayer {
     return $track;
   }
 
+  public function audioGetLyrics( $lyricsId ) {
+    $params = array(
+      'api_id' => $this->appId,
+      'v' => '3.0',
+      'method' => 'audio.getLyrics',
+      'format' => 'json',
+      'test_mode' => 1,
+      'lyrics_id' => $lyricsId
+    );
+    $http_query = http_build_query($params);
+    $token = $this->getToken();
+    $result = $this->file_get_contents_curl("https://api.vk.com/method/audio.getById?{$http_query}&access_token={$token}");
+    $result = json_decode($result);
+
+    $result = $result->response;
+
+    return $result->text;
+  }
+
   public function remoteFilesize($url) {
     $head = get_headers($url, 1);
     return isset($head['Content-Length']) ? $head['Content-Length'] : "unknown";
@@ -214,8 +234,8 @@ class OpenPlayer {
         'vkId' => "{$track->owner_id}_{$track->aid}",
         'url' => $track->url,
         'duration' => gmdate("i:s", $track->duration),
-        'artist' =>$track->artist,
-        'title' =>$track->title,
+        'artist' => $track->artist,
+        'title' => $track->title,
       );
 
       $tracks[] = $track; 

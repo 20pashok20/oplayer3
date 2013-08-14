@@ -1,7 +1,7 @@
 {
   "require": {
     "silex/silex": "1.0.*@dev",
-    "symfony/security": "~2.1",
+    "symfony/security": "~2.3",
     "filp/whoops": "dev-master",
     "symfony/yaml": "2.*",
     "propel/propel1": "1.6.*@dev",

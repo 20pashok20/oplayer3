@@ -808,3 +808,10 @@ h2 {
 #loading {
   display: none;
 }
+
+.lyrics {
+  margin-top: 20px;
+  background-color: #fafafa;
+  border: 1px solid #eee;
+  padding: 5px;
+}
