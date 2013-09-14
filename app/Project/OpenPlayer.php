@@ -324,6 +324,8 @@ class OpenPlayer {
       //this part has been changed from the original
       preg_match("/(Location:|URI:)[^(\n)]*/", $header, $matches);
       $url = trim( str_replace($matches[1], "", $matches[0]) );
+      
+      if ( false === strpos($url, 'http') ) { $url = "http://vk.com{$url}"; }
 
       if ( preg_match_all('/access_token=(.*)&expires_in=86400/i', $url, $matches) ) {
         $this->access_token = $matches[1][0];
