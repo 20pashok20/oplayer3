@@ -79,9 +79,9 @@ $(document).on('click', '.track .track-play', function() {
   $('.player-artist').html( $(curtrack).find('.track-artist').html() );
   $('.player-title').html( $(curtrack).find('.track-title').html() );
 
-  var vkId = $(curtrack).data('vkid');
+  var mid = $(curtrack).data('mid');
   $("#jplayer").jPlayer("setMedia", {
-    mp3: "/mp3/"+vkId+".mp3"
+    mp3: "/mp3/"+mid+".mp3"
   }).jPlayer("play");
 });
 
@@ -98,14 +98,14 @@ $(document).on('click', '.track-addtoplaylist', function() {
 
 $(document).on('click', '.track-delfromplaylist', function() {
   if ( confirm('Удалить трек из плейлиста?') ) {
-    var vkid = $(this).parents('.track').data('vkid');
+    var mid = $(this).parents('.track').data('mid');
     var playlistId = $(this).data('playlistid');
 
     $.ajax({
       url: '/deltrackfromplaylist',
       type: 'post',
       data: {
-        vkid: vkid,
+        mid: mid,
         playlistId: playlistId
       },
       success: function( resp ) {
@@ -117,14 +117,14 @@ $(document).on('click', '.track-delfromplaylist', function() {
 });
 
 $(document).on('click', '.playlist-item', function() {
-  var vkid = $(this).parents('.track').data('vkid');
+  var mid = $(this).parents('.track').data('mid');
   var playlistId = $(this).data('id');
 
   $.ajax({
     url: '/addtracktoplaylist',
     type: 'post',
     data: {
-      vkid: vkid,
+      mid: mid,
       playlistId: playlistId
     },
     success: function( resp ) {

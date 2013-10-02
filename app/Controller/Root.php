@@ -89,7 +89,7 @@ class Root implements \Silex\ControllerProviderInterface {
 
     $index->post('/addtracktoplaylist', function( Application $app ) {
       if ( $app['user']::get() ) {
-        $vkid = $app['request']->get('vkid');
+        $mid = $app['request']->get('mid');
         $playlistId = $app['request']->get('playlistId');
 
         $playlist = \Model\PlaylistQuery::create()
@@ -98,8 +98,8 @@ class Root implements \Silex\ControllerProviderInterface {
           ->findOne();
 
         if ( $playlist ) {
-          $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24*14, function() use ( $app, $vkid ) {
-            return $app['openplayer']->audioGetById( $vkid );
+          $vkTrack = Cache::get("vk_track_{$mid}", 60*60*24*14, function() use ( $app, $mid ) {
+            return $app['openplayer']->audioGetById( $mid );
           });
 
           $playlist->setCnt($playlist->getCnt() + 1);
@@ -121,7 +121,7 @@ class Root implements \Silex\ControllerProviderInterface {
 
     $index->post('/deltrackfromplaylist', function( Application $app ) {
       if ( $app['user']::get() ) {
-        $vkid = $app['request']->get('vkid');
+        $mid = $app['request']->get('mid');
         $playlistId = $app['request']->get('playlistId');
 
         $playlist = \Model\PlaylistQuery::create()
@@ -139,7 +139,7 @@ class Root implements \Silex\ControllerProviderInterface {
 
           foreach ( $ptracks as $track ) {
             $inf = unserialize($track->getTrack());
-            if ( $vkid == "{$inf->owner_id}_{$inf->aid}" ) {
+            if ( $mid == $inf->mid ) {
               $track->delete();
             }
           }
@@ -190,102 +190,54 @@ class Root implements \Silex\ControllerProviderInterface {
       }
     })->bind('poschange');
 
-    $index->get('/track/{vkId}', function( Application $app, $vkId ) {
-      $vkTrack = Cache::get("vk_track_{$vkId}", 60*60*24*14, function() use ($app, $vkId) {
-        return $app['openplayer']->audioGetById( $vkId );
+    $index->get('/track/{mid}', function( Application $app, $mid ) {
+      $track = Cache::get("vk_track_{$mid}", 60*60*24*14, function() use ($app, $mid) {
+        return $app['openplayer']->audioGetById( $mid );
       });
-
-      $track = array(
-        'vkId' => "{$vkTrack->owner_id}_{$vkTrack->aid}",
-        'url' => $vkTrack->url,
-        'duration' => gmdate("i:s", $vkTrack->duration),
-        'artist' => $vkTrack->artist,
-        'title' => $vkTrack->title,
-      );
-
-      $lyrics = null;
-      if ( isset($vkTrack->lyrics_id) && $lyricsId = $vkTrack->lyrics_id ) {
-        $lyrics = Cache::get("vk_tracklyrics_{$vkTrack->lyrics_id}", 60*60*24*14, function() use ($app, $lyricsId) {
-          return $app['openplayer']->audioGetLyrics( $lyricsId );
-        });
-      }
 
       return $app['twig']->render('root/track.twig', array(
         'track' => $track,
         'i' => 0,
         'playlistId' => null,
-        'lyrics' => $lyrics
+        // 'lyrics' => $lyrics
       ));
     })->bind('track');
 
-    $index->get('/captcha', function( Application $app ) {
-      $img = $app['request']->get('img');
-      $sid = $app['request']->get('sid');
-
-      return $app['twig']->render('root/captcha.twig', array(
-        'img' => $img,
-        'sid' => $sid
-      ));
-    })->bind('captcha');
-
-    $index->post('/entercaptcha', function( Application $app ) {
-      $sid = $app['request']->get('sid');
-      $key = $app['request']->get('key');
-
-      $app['openplayer']->search(
-        'Test', 0, 1,
-        $sid, $key
-      );
-
-      return $app->redirect('/');
-    })->bind('entercaptcha');
-
-    $index->get('/test', function( Application $app ) {
-      die;
-      for ( $i=0; $i < 100; $i++ ) { 
-        $q = uniqid();
-        $search = $app['openplayer']->search($q);
-        error_log( $i . ':' . $q);
-      }
-      // $q = 'test';
-      // $search = $app['openplayer']->search($q);
-      // print_r($search);
-      die;
-    })->bind('test');
-
-    $index->get('/mp3/{vkid}.mp3', function( Application $app, $vkid ) {
+    $index->get('/mp3/{mid}.mp3', function( Application $app, $mid ) {
       session_write_close();
 
-      $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24, function() use ($app, $vkid) {
-        return $app['openplayer']->audioGetById( $vkid );
+      $vkTrack = Cache::get("vk_track_{$mid}", 60*60*24, function() use ($app, $mid) {
+        return $app['openplayer']->audioGetById( $mid );
       });
 
-      // If cached url is expired, recache track.
-      $headers = get_headers($vkTrack->url);
+      $token = $app['openplayer']->getToken();
+      $link = "{$vkTrack->link}?session_key={$token}";
+
+      // If cached link is expired, recache track.
+      $headers = get_headers($link);
       if ( 'HTTP/1.1 200 OK' != $headers[0] ) {
-        $vkTrack = Cache::get("vk_track_{$vkid}", 60*60*24, function() use ($app, $vkid) {
-          return $app['openplayer']->audioGetById( $vkid );
-        }, true);
+        $token = $app['openplayer']->getToken();
+        $link = "{$vkTrack->link}?session_key={$token}";
       }
 
       header("Content-Length: {$vkTrack->size}");
 
       if ( $app['request']->get('dl') ) {
-          header('Last-Modified:');
-          header('ETag:');
-          header('Content-Type: audio/mpeg');
-          header('Accept-Ranges: bytes');
+        header('Last-Modified:');
+        header('ETag:');
+        header('Content-Type: audio/mpeg');
+        header('Accept-Ranges: bytes');
 
-          header("Content-Disposition: attachment; filename=\"{$vkTrack->fname}\"");
-          header('Content-Description: File Transfer');
-          header('Content-Transfer-Encoding: binary');
+        header("Content-Disposition: attachment; filename=\"{$vkTrack->title}\".mp3");
+        header('Content-Description: File Transfer');
+        header('Content-Transfer-Encoding: binary');
 
-          echo file_get_contents($vkTrack->url);
-          die;
+        echo file_get_contents($link);
+        die;
       }
 
-      return $app->stream(function () use ($vkTrack) {
-        readfile($vkTrack->url);
+      return $app->stream(function () use ($link) {
+        readfile($link);
       }, 200, array('Content-Type' => 'audio/mpeg'));
     })->bind('mp3');
 
@@ -309,27 +261,27 @@ class Root implements \Silex\ControllerProviderInterface {
         $tracks = array();
         foreach ( $pt as $t ) {
           $inf = unserialize($t->getTrack());
-
-          $track = array(
-            'vkId' => "{$inf->owner_id}_{$inf->aid}",
-            'url' => $inf->url,
-            'duration' => gmdate("i:s", $inf->duration),
-            'artist' =>$inf->artist,
-            'title' =>$inf->title,
-          );
-          $tracks[] = $track;
+          $tracks[] = $inf;
         }
         $count = count($pt);
         $q = $playlist->getName();
       } else {
-        $search = Cache::get("vk_search_{$q}", 60*60*24*7, function() use ($app, $q) {
-          $search = $app['openplayer']->search($q);
+        $params = array(
+          'q' => $q,
+          'p' => 0,
+          'count' => 200,
+        );
+
+        $search = Cache::get("vk_search_".join(',', $params), 60*60*24*7, function() use ($app, $params) {
+          $search = $app['openplayer']->search($params);
+
           if ( $search['tracks'] ) {
             return $search;
           }
 
           return null;
         });
+
         $tracks = $search['tracks'];
         $count = $search['count'];
       }

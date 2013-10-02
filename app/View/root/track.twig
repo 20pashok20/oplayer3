@@ -6,11 +6,4 @@
 {% block content %}
 	{% include 'root/track-item.twig' %}
 
-  {% if lyrics %}
-    <div class="lyrics">
-      <h2>{{ track.artist }} — {{ track.title }}</h2>
-      <br/>
-      {{ lyrics|raw|nl2br }}
-    </div>
-  {% endif %}
 {% endblock %}
