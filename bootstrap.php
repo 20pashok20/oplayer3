@@ -1,5 +1,6 @@
 <?php
 session_start();
+date_default_timezone_set('Europe/Moscow');
 $app = new Silex\Application;
 
 // Must be setted to false in production mode.
@@ -71,14 +72,11 @@ $app['lastfm'] = $app->share(function () use ($app) {
 
 // OpenPlayer
 $app['openplayer'] = $app->share(function () use ($app) {
-  // @todo require only when parsing
-  require_once 'app/Project/simple_html_dom.php';
   return new Project\OpenPlayer(
-    $app['conf']['vk'],
-    $app['conf']['appId']
+    $app['conf']['apps']
   );
 });
-Project\OpenPlayer::$app = $app;
+// Project\OpenPlayer::$app = $app;
 
 if ( $app['debug'] ) {
   // Monolog
