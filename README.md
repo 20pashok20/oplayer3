@@ -3,15 +3,6 @@ oplayer3 v3
 
 ![OpenPlayer v3](http://cs312821.vk.me/v312821696/1dc6/J9khmkOQ494.jpg)
 
-# Что нового в v3:
-<br/>
-Учет последних ихменений в API вконтакте;<br/>
-Обработка капчи;<br/>
-Новая архитектура движка, теперь код максимально
-близок к «идеалу», без излишеств;<br/>
-Полностью новый дизайн;<br/>
-Новая и простая система кеширования;<br/>
-
 # Установка:
 Скачайте дистрибутив oplayer (https://github.com/uavn/oplayer3), распакуйте и залейте через FTP (или SSH) на ваш хостинг в каталог соответствующий домену. Для этого воспользуйтесь любым FTP-клиентом (FileZilla, mc). При этом, в настройках (виртуалхостах) нужно направить в папку web сайта.<br/>
 <br/>
@@ -19,11 +10,11 @@ oplayer3 v3
 «php composer.phar install» из консоли в корне проекта.<br/>
 <br/>
 
-Направьте веб-сервер в каталог web проекта, пример виртуалхоста apache2:<br/>
+Направьте веб-сервер в каталог проекта, пример виртуалхоста apache2:<br/>
 &lt;VirtualHost *:80&gt;<br/>
   ServerName mysuperplayer.com<br/>
-  DocumentRoot /var/www/oplayer3/web<br/>
-  &lt;Directory /var/www/oplayer3/web&gt;<br/>
+  DocumentRoot /var/www/oplayer3<br/>
+  &lt;Directory /var/www/oplayer3&gt;<br/>
     AllowOverride All<br/>
   &lt;/Directory&gt;<br/>
 &lt;/VirtualHost&gt;<br/>
@@ -35,7 +26,7 @@ oplayer3 v3
 ![PHPMyAdmin](http://dl.dropbox.com/u/10902867/blog/pma.png)
 
 Откройте файл app/Confid/app.ini любым текстовым редактором.
-Здесь нужно указать данные доступа к вашему аккаунту вконтакте а также ID StandAlone приложения, через которое он будет работать (Создать можно здесь — http://vk.com/dev).
+Здесь нужно указать данные доступа к вашему аккаунту mail.ru, через который он будет работать.
 
 В файле app/Config/build.properties нужно указать настройки доступа к базе данных:<br/>
 propel.database.url = mysql:host=localhost;dbname=НАЗВАНИЕ_БАЗЫ_ДАННЫХ;charset=utf8<br/>
